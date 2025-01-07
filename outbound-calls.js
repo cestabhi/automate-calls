@@ -47,6 +47,7 @@ export function registerOutboundRoutes(fastify) {
   // Route to initiate outbound calls
   fastify.post("/outbound-call", async (request, reply) => {
     const { number, prompt, firstMessage } = request.body;
+    console.log("firstMessage", firstMessage);
 
     if (!number) {
       return reply.code(400).send({ error: "Phone number is required" });
@@ -118,7 +119,7 @@ export function registerOutboundRoutes(fastify) {
               conversation_config_override: {
                 agent: {
                   prompt: { prompt: customParameters?.prompt || "you are a gary from the phone store" },
-                  first_message: "Hi, I'm Eric. How can I help you with the communication masterclass today? You can ask me any question about the course and I will help you out as your personal coach!! ",
+                  firstMessage: customParameters?.firstMessage || "Hi, I'm Eric, how may I help you?",
                 },
               }
             };
@@ -216,7 +217,10 @@ export function registerOutboundRoutes(fastify) {
             case "start":
               streamSid = msg.start.streamSid;
               callSid = msg.start.callSid;
-              customParameters = msg.start.customParameters;  // Store parameters
+              customParameters = {
+                ...msg.start.customParameters,
+                firstMessage: msg.start.customParameters?.firstMessage || request.body.firstMessage,
+              };
               console.log(`[Twilio] Stream started - StreamSid: ${streamSid}, CallSid: ${callSid}`);
               console.log('[Twilio] Start parameters:', customParameters);
               break;
