@@ -118,8 +118,8 @@ export function registerOutboundRoutes(fastify) {
               type: "conversation_initiation_client_data",
               conversation_config_override: {
                 agent: {
-                  prompt: { prompt: customParameters?.prompt || "you are a gary from the phone store" },
-                  firstMessage: customParameters?.firstMessage || "Hi, I'm Eric, how may I help you?",
+                  prompt: { prompt: customParameters?.prompt },
+                  firstMessage: customParameters?.firstMessage,
                 },
               }
             };
