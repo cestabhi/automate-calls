@@ -3,8 +3,8 @@ import Twilio from "twilio";
 
 export function registerOutboundRoutes(fastify) {
   // Check for required environment variables
-  const { 
-    ELEVENLABS_API_KEY, 
+  const {
+    ELEVENLABS_API_KEY,
     ELEVENLABS_AGENT_ID,
     TWILIO_ACCOUNT_SID,
     TWILIO_AUTH_TOKEN,
@@ -46,7 +46,7 @@ export function registerOutboundRoutes(fastify) {
 
   // Route to initiate outbound calls
   fastify.post("/outbound-call", async (request, reply) => {
-    const { number, prompt } = request.body;
+    const { number, prompt, firstMessage } = request.body;
 
     if (!number) {
       return reply.code(400).send({ error: "Phone number is required" });
@@ -59,16 +59,16 @@ export function registerOutboundRoutes(fastify) {
         url: `https://${request.headers.host}/outbound-call-twiml?prompt=${encodeURIComponent(prompt)}`
       });
 
-      reply.send({ 
-        success: true, 
-        message: "Call initiated", 
-        callSid: call.sid 
+      reply.send({
+        success: true,
+        message: "Call initiated",
+        callSid: call.sid
       });
     } catch (error) {
       console.error("Error initiating outbound call:", error);
-      reply.code(500).send({ 
-        success: false, 
-        error: "Failed to initiate call" 
+      reply.code(500).send({
+        success: false,
+        error: "Failed to initiate call"
       });
     }
   });
@@ -118,7 +118,7 @@ export function registerOutboundRoutes(fastify) {
               conversation_config_override: {
                 agent: {
                   prompt: { prompt: customParameters?.prompt || "you are a gary from the phone store" },
-                  first_message: "hey there! how can I help you today?",
+                  first_message: "Hi, I'm Eric. How can I help you with the communication masterclass today? You can ask me any question about the course and I will help you out as your personal coach!! ",
                 },
               }
             };
@@ -166,9 +166,9 @@ export function registerOutboundRoutes(fastify) {
 
                 case "interruption":
                   if (streamSid) {
-                    ws.send(JSON.stringify({ 
+                    ws.send(JSON.stringify({
                       event: "clear",
-                      streamSid 
+                      streamSid
                     }));
                   }
                   break;
